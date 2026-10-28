@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "id": "three-r164-1",
+      "kind": "vendored-library",
+      "path": "lib/scene/vendor/three.module.js",
+      "version": "0.164.1",
+      "source": "https://registry.npmjs.org/three/-/three-0.164.1.tgz",
+      "originalMember": "package/build/three.module.js",
+      "license": "MIT",
+      "licensePath": "lib/scene/vendor/LICENSE.txt",
+      "archiveSha256": "3798b9631ab02167095f0be742981da98a8d6f2cde1f1bb9b27ad44fe2e58771",
+      "modified": true,
+      "originalSha256": "a97ec6852978949b7941c070b81292b842473a37549222353fa0a70c18d7285a",
+      "sha256": "5a4cab6c875aa60441d42cae810d6216432ab64186bc3206d5fee8764933a021",
+      "transformation": "Lossless production JavaScript minification with esbuild 0.28.1; legal comments retained inline, original MIT license retained alongside.",
+      "buildCommand": "esbuild three.module.js --minify --format=esm --target=es2020 --legal-comments=inline --outfile=three.module.production.js (production output vendored as three.module.js)"
+    },
+    {
+      "id": "nora-workshop",
+      "kind": "procedural-scene",
+      "path": "lib/scene/workshop.js",
+      "source": "Approved Small Works Nora workshop prototype, 2026-10-27",
+      "sourceFilename": "small-works-nora-workshop.html",
+      "sourceSha256": "64e0a4680cc0e78adef5cd0bc31d08e27b0fae2f0d640341f7ef65f47beb93c8",
+      "adaptation": "Renderer, refined character geometry, constrained wrist inverse kinematics, and workshop extracted from the approved prototype. Prototype business UI, persistence, economy, and focus timer removed. Assets generated locally with geometry; no runtime network requests."
+    },
+    {
+      "id": "crew-and-joinery",
+      "kind": "procedural-scene-extension",
+      "path": "lib/scene/workshop.js",
+      "source": "Original Small Works crew and joinery milestone, 2026-10-28",
+      "adaptation": "Ada uses the approved adult Nora body, continuous shoulder geometry and wrist-constrained IK, with a separate muted gold shirt, plum apron, brown hair and slate blue cap palette. Default Nora geometry and palette remain unchanged. Added physical second workshop bay and apprentice bench, joinery trestle table with clamps and chisel jig, and recipe-specific spoon, stool, birdhouse, shelf, box, boat, chair, desk and cabinet assemblies. All geometry is generated locally; no runtime network, remote assets or record mutations. Shared disposal traverses every attached geometry, material and texture, including hidden recipe and apprentice meshes."
+    },
+    {
+      "id": "forge-and-mixed-work",
+      "kind": "procedural-scene-extension",
+      "path": "lib/scene/workshop.js",
+      "source": "Original Small Works forge and mixed work milestone, 2026-10-28",
+      "adaptation": "Original local geometry adds an L-shaped stone forge bay, masonry hearth with steady restrained emissive coals, anvil and stump, stock table, quench tub, and hand tool rack. Ivo is an original fictional adult blacksmith using the approved connected shirt geometry and wrist-constrained IK, distinguished by warm brown skin, a modest moustache, sage shirt, leather apron and brown canvas cap; Nora and Ada retain their existing geometry and palettes. Role-mapped staff presence includes off-duty active staff and gates Ivo to a completed forge and active staff status. Allocated blacksmith hammer, heating and tongs clips retain the shared wrist limits. Recipe-specific hinge set, tool head, lantern, iron stand, reinforced chest, garden bench and standing lamp use authored geometry with independent wood/metal component and assembly progress, while older callers retain overall progress. Stage-specific wood and metal work displays only the corresponding station component; selected objects remain visible during idle, pause and review, and explicit empty targets clear their worktops. All meshes stay attached for shared disposal, including hidden forge and recipe assets. No imported character likeness, generated image, external model, runtime network or new dependency is used."
+    },
+    {
+      "id": "yard-greenhouse-and-free-styles",
+      "kind": "procedural-scene-extension",
+      "path": "lib/scene/workshop.js",
+      "source": "Original Small Works craft yard and neighborhood greenhouse milestone, 2026-10-28",
+      "adaptation": "Original locally authored geometry adds a compact front craft yard, dedicated carving and finishing stations, Mara and Lale as fictional adult craftspeople using the approved connected shoulder and constrained wrist rig. Mara has warm brown skin, an oatmeal shirt, russet apron and sand cap; Lale has a blue shirt, ochre apron and mauve cap. Nora, Ada and Ivo retain their original geometry and palettes. Up to three allocated workers work while all five active craftspeople remain visible off duty. Saved panel-a, panel-b, frame and assembly fractions drive independent community construction. Explicit delivery alone adds permanent glazing, warm potted seedlings and a commemorative five-maker sprout display. Authored carved ripples and carved leaves use local geometric inlay; warm honey and dusk blue finishes use cloned, object-local materials with restored natural defaults. All sixteen recipe families retain component visibility and use eligible style surfaces. No imported likeness, external image or model, runtime network, economic effect or new dependency. Hidden meshes, original and cloned style materials remain in the complete disposal registry."
+    }
+  ]
+}

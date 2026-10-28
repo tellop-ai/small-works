@@ -1,0 +1,282 @@
+// The shape of what this app stores.
+//
+// This file is the agent's editing surface: a change
+// to how the app keeps information is a change *here*, and Tellop's data-change
+// pipeline turns it into a reviewed, rehearsed step in `prisma/migrations/`.
+// Nothing edits those step files by hand - they are what has already been applied.
+//
+// The stored names are the ones this template has always used (`people`, `notes`,
+// `owner_id`, ...), kept through `@map`/`@@map` rather than renamed, so an app
+// created before this change reads its own saved information unchanged.
+//
+// There is deliberately no `url` here. Version 7 takes the location from the
+// config file beside it, and Tellop supplies that location per operation rather
+// than trusting whatever a project file happens to say.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../lib/data/generated"
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Person {
+  id       String  @id
+  name     String
+  isSample Boolean @default(false) @map("is_sample")
+  notes    Note[]
+
+  @@map("people")
+}
+
+model Note {
+  id        Int    @id @default(autoincrement())
+  ownerId   String @map("owner_id")
+  body      String
+  createdAt String @map("created_at")
+  owner     Person @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, id], map: "notes_by_owner")
+  @@map("notes")
+}
+
+model Workshop {
+  ownerId              String  @id @map("owner_id")
+  name                 String
+  makerName            String  @map("maker_name")
+  coinMinor            Int     @map("coin_minor")
+  bankSeconds          Int     @map("bank_seconds")
+  lifetimeFocusSeconds Int     @map("lifetime_focus_seconds")
+  practiceSeconds      Int     @map("practice_seconds")
+  revision             Int
+  activeSessionId      String? @map("active_session_id")
+  createdAt            String  @map("created_at")
+  updatedAt            String  @map("updated_at")
+
+  @@map("small_works_workshops")
+}
+
+model Preference {
+  ownerId        String  @id @map("owner_id")
+  language       String
+  appearance     String
+  timeZone       String  @map("time_zone")
+  motion         String
+  soundEnabled   Boolean @map("sound_enabled")
+  ambienceVolume Int     @map("ambience_volume")
+  effectVolume   Int     @map("effect_volume")
+  defaultMode    String  @map("default_mode")
+  defaultMinutes Int     @map("default_minutes")
+  breakMinutes   Int     @map("break_minutes")
+  updatedAt      String  @map("updated_at")
+
+  @@map("small_works_preferences")
+}
+
+model FocusTask {
+  id           String  @id
+  ownerId      String  @map("owner_id")
+  title        String
+  status       String
+  focusSeconds Int     @map("focus_seconds")
+  sessionCount Int     @map("session_count")
+  completedAt  String? @map("completed_at")
+  createdAt    String  @map("created_at")
+  updatedAt    String  @map("updated_at")
+
+  @@index([ownerId, status, id])
+  @@map("small_works_tasks")
+}
+
+model TaskSession {
+  id              String @id
+  ownerId         String @map("owner_id")
+  taskId          String @map("task_id")
+  taskTitle       String @map("task_title")
+  acceptedSeconds Int    @map("accepted_seconds")
+  createdAt       String @map("created_at")
+
+  @@index([ownerId, taskId, id])
+  @@map("small_works_task_sessions")
+}
+
+model FocusSession {
+  id                     String  @id
+  ownerId                String  @map("owner_id")
+  mode                   String
+  status                 String
+  intention              String
+  tag                    String
+  timeZone               String  @map("time_zone")
+  startedAt              String  @map("started_at")
+  activeSince            String? @map("active_since")
+  endedAt                String? @map("ended_at")
+  limitSeconds           Int     @map("limit_seconds")
+  candidateClosedSeconds Int     @map("candidate_closed_seconds")
+  acceptedSeconds        Int     @map("accepted_seconds")
+  partCount              Int     @map("part_count")
+  currentPlan            String  @map("current_plan")
+  allocationSummary      String  @map("allocation_summary")
+  settlementOperationId  String? @map("settlement_operation_id")
+  recovered              Boolean
+  createdAt              String  @map("created_at")
+  updatedAt              String  @map("updated_at")
+
+  @@index([ownerId, status, id])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_sessions")
+}
+
+model SessionPart {
+  id               String @id
+  ownerId          String @map("owner_id")
+  sessionId        String @map("session_id")
+  ordinal          Int
+  startedAt        String @map("started_at")
+  endedAt          String @map("ended_at")
+  candidateSeconds Int    @map("candidate_seconds")
+  planSnapshot     String @map("plan_snapshot")
+  createdAt        String @map("created_at")
+
+  @@unique([ownerId, sessionId, ordinal])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_session_parts")
+}
+
+model WorkJob {
+  id                    String  @id
+  ownerId               String  @map("owner_id")
+  recipeId              String  @map("recipe_id")
+  recipeVersion         Int     @map("recipe_version")
+  kind                  String
+  status                String
+  chosenFinish          Int     @map("chosen_finish")
+  completedFinish       Int     @map("completed_finish")
+  reservedMaterialMinor Int     @map("reserved_material_minor")
+  appliedSeconds        Int     @map("applied_seconds")
+  saleableSeconds       Int     @map("saleable_seconds")
+  specSnapshot          String  @map("spec_snapshot")
+  progressSnapshot      String  @map("progress_snapshot")
+  patternId             String  @map("pattern_id")
+  finishStyleId         String  @map("finish_style_id")
+  displayName           String  @map("display_name")
+  note                  String
+  orderId               String? @map("order_id")
+  finalizedAt           String? @map("finalized_at")
+  saleMinor             Int?    @map("sale_minor")
+  showroomPosition      Int?    @map("showroom_position")
+  createdAt             String  @map("created_at")
+  updatedAt             String  @map("updated_at")
+
+  @@index([ownerId, status, id])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_jobs")
+}
+
+model FocusAllocation {
+  id             String  @id
+  ownerId        String  @map("owner_id")
+  sourceKind     String  @map("source_kind")
+  sourceId       String  @map("source_id")
+  ordinal        Int
+  jobId          String? @map("job_id")
+  workerId       String? @map("worker_id")
+  seconds        Int
+  allocationKind String  @map("allocation_kind")
+  createdAt      String  @map("created_at")
+
+  @@unique([ownerId, sourceKind, sourceId, ordinal])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_allocations")
+}
+
+model WorkshopUnlock {
+  id          String  @id
+  ownerId     String  @map("owner_id")
+  unlockId    String  @map("unlock_id")
+  sourceJobId String? @map("source_job_id")
+  unlockedAt  String  @map("unlocked_at")
+  createdAt   String  @map("created_at")
+
+  @@unique([ownerId, unlockId])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_unlocks")
+}
+
+model CrewMember {
+  id               String  @id
+  ownerId          String  @map("owner_id")
+  staffId          String  @map("staff_id")
+  status           String
+  nickname         String
+  onboardingJobId  String? @map("onboarding_job_id")
+  allocatedSeconds Int     @map("allocated_seconds")
+  joinedAt         String? @map("joined_at")
+  patternMilestone Int     @map("pattern_milestone")
+  createdAt        String  @map("created_at")
+  updatedAt        String  @map("updated_at")
+
+  @@unique([ownerId, staffId])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_crew")
+}
+
+model Commission {
+  id                  String  @id
+  ownerId             String  @map("owner_id")
+  sequence            Int
+  templateId          String  @map("template_id")
+  recipeId            String  @map("recipe_id")
+  recipeVersion       Int     @map("recipe_version")
+  requiredFinish      Int     @map("required_finish")
+  requiredWorkSeconds Int     @map("required_work_seconds")
+  status              String
+  objectId            String? @map("object_id")
+  acceptedAt          String? @map("accepted_at")
+  deliveredAt         String? @map("delivered_at")
+  bonusMinor          Int     @map("bonus_minor")
+  createdAt           String  @map("created_at")
+  updatedAt           String  @map("updated_at")
+
+  @@unique([ownerId, sequence])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_commissions")
+}
+
+model WorkshopOperation {
+  id                String @id
+  ownerId           String @map("owner_id")
+  operationId       String @map("operation_id")
+  revision          Int
+  kind              String
+  requestDigest     String @map("request_digest")
+  coinDeltaMinor    Int    @map("coin_delta_minor")
+  bankDeltaSeconds  Int    @map("bank_delta_seconds")
+  focusDeltaSeconds Int    @map("focus_delta_seconds")
+  resultSummary     String @map("result_summary")
+  createdAt         String @map("created_at")
+
+  @@unique([ownerId, operationId])
+  @@unique([ownerId, revision])
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_operations")
+}
+
+model SavedExport {
+  id         String  @id
+  ownerId    String  @map("owner_id")
+  kind       String
+  exportFile String? @map("export_file")
+  fromDay    String? @map("from_day")
+  toDay      String? @map("to_day")
+  status     String
+  createdAt  String  @map("created_at")
+  updatedAt  String  @map("updated_at")
+
+  @@index([ownerId, createdAt, id])
+  @@map("small_works_exports")
+}

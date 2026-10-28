@@ -1,0 +1,857 @@
+/*
+ * How this app looks.
+ *
+ * The values live next door in `tokens.css` and `fonts.css`, which **Tellop owns and
+ * replaces whole** when the look-and-feel step is approved. Everything here reads them
+ * by name, so a new look is two files changing rather than a search through rules - and
+ * nothing here ever writes a colour, a radius, a shadow or a font family of its own.
+ *
+ * Every name ending in `-foreground` is what is legible *on* the name beside it. Use the
+ * pair; one half of it over some other colour is a pair of colours nobody checked.
+ *
+ * The imports have to be the first statements in the file: CSS puts `@import` before
+ * every rule, and a browser ignores one that comes later. `tokens.css` and `fonts.css`
+ * come first on purpose: they define the names everything below reads.
+ *
+ * ## The component kit reads the same names
+ *
+ * The pieces under `components/` are written in Tailwind's utility names - `bg-primary`,
+ * `text-muted-foreground`, `rounded-lg`. The `@theme` block below is the one place those
+ * names are joined to this app's own: `--color-primary: var(--primary)` and nothing else,
+ * so a piece of the kit is coloured by `tokens.css` exactly like a rule written by hand.
+ * There is no colour, no radius, no shadow and no font family anywhere in this file.
+ *
+ * `kit.css` beside this one is the kit's own sheet, copied in whole from the people who
+ * wrote the pieces - the open/closed states, the fade edges, the shimmer. It travels with
+ * the app so nothing has to be fetched for it, and it names none of this app's colours;
+ * every file it came from is written down in `components/PROVENANCE.json`.
+ *
+ * Two of the thirty-four names are deliberately NOT in that block under their own spelling -
+ * `--shadow` and `--radius` - and the reason is mechanical rather than stylistic. Measured:
+ * adding `--shadow: var(--shadow)` there puts `:root,:host{--shadow:var(--shadow)}` into the
+ * built stylesheet, after `tokens.css`'s real value and therefore winning over it, and a
+ * declaration that refers to itself is one CSS throws away. The shadow would silently stop
+ * existing everywhere. So both are read straight where a rule wants them -
+ * `box-shadow: var(--shadow)`, `border-radius: var(--radius)` - the way `--reading` and
+ * `--font-body` already are.
+ *
+ * That is about the two names themselves, and it is NOT the same as saying the kit's own
+ * `shadow-*` and `rounded-*` classes cannot reach this look. They can, and they do, because
+ * the names in the block are DIFFERENT names: `--shadow-sm` is not `--shadow`, so there is
+ * no self-reference and nothing is thrown away. The four small steps are pointed at this
+ * look's shadow, which is what makes a kit card carry the shadow the look chose without one
+ * line of the piece being edited. Measured in the built stylesheet: `.shadow-md` and every
+ * `shadow-sm` rule come out as `--tw-shadow: var(--shadow)`, where before the same build
+ * gave them a fixed grey of their own. `2xs` and `xs` are pointed the same way although no
+ * piece here uses one yet, so the day one does it inherits the look rather than a stranger's
+ * grey. `shadow-lg`, `shadow-xl` and up are deliberately left as they came:
+ * those are what a dialog or a menu floats on, and how far a thing floats above the page is
+ * about depth rather than about a look's own resting shadow. `shadow-(--shadow)` still works
+ * and still means the same thing; it is now the long way round for the small steps.
+ *
+ * The kit's corner sizes are derived from `--radius` under the `--radius-*` names, which
+ * collide with nothing - `xs` through `4xl`, multiples of the one chosen radius, so every
+ * `rounded-*` class in the kit is this look's corner too. A rule here that wants a smaller
+ * or a rounder corner than `var(--radius)` reads one of those steps by name -
+ * `var(--radius-xs)`, `var(--radius-4xl)` - rather than writing a size of its own, which is
+ * what keeps the sentence above true.
+ */
+
+@import "./tokens.css";
+@import "./fonts.css";
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./kit.css";
+@import "./print.css";
+
+/*
+ * The dark half is used only when DESIGN.md records an explicit request.
+ * Its switch is pressed by the visitor, never selected by the operating system.
+ */
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * The join. Every right-hand side is a name `tokens.css` or `fonts.css` defines, so this
+ * block invents nothing - it only says which utility name reaches which of this app's own.
+ *
+ * The corner sizes are multiples of the one chosen radius rather than a subtraction, so a
+ * look that asked for square corners stays square at every size instead of going negative.
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --radius-xs: calc(var(--radius) * 0.4);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-2xs: var(--shadow);
+  --shadow-xs: var(--shadow);
+  --shadow-sm: var(--shadow);
+  --shadow-md: var(--shadow);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
+}
+
+/*
+ * The starting styles, and why they are inside a layer.
+ *
+ * Everything below is what this app looks like before anybody writes a line of their own:
+ * the page, the headings, the form, the five bands. It sits in `@layer base` so that a
+ * utility class always wins over it - which is the whole reason the component kit works.
+ *
+ * A rule written OUTSIDE a layer beats every layer, so an unlayered `button { ... }` here
+ * would quietly override the kit's own Button on every screen and nothing would report it:
+ * the colours would still be this app's, and the shape, the size and the hover would not be
+ * the kit's. That is the trap this block exists to close.
+ *
+ * So: starting styles go in here. Anything a screen wants differently is a utility class or
+ * a rule of its own, and it wins.
+ *
+ * The first rule is the one default the kit is written against. A border utility with no
+ * colour of its own draws in the current text colour, which is never what a card's divider
+ * means; this is what makes it draw in `--border` instead.
+ */
+@layer base {
+  * {
+    box-sizing: border-box;
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: var(--reading);
+    line-height: 1.55;
+  }
+
+  /*
+   * The starting page's own shape, and why it is a class rather than `body` and
+   * `main`.
+   *
+   * The narrow centred column below is what the notes demo this template ships
+   * wants. It is NOT what a screen wants, and `body` and `main` are every screen:
+   * a layer rule is beaten only by a utility somebody wrote, and `flex-1` writes
+   * `flex`, not `max-width`, while nothing writes a margin or a padding for you.
+   *
+   * Measured 2026-09-02 on a real project set up from this template, with a real
+   * look emitted into it, at 1280x800. The look step draws a person one full-width
+   * page of their own app - top bar flush to the edge, content filling what is
+   * left. Drawing that same page's markup here, `main` came out 372.8 x 505.6
+   * with `max-width: 640px` and `margin: 0 433.6px` instead of 1280 x 747; and an
+   * ordinary sidebar layout - an `<aside>` beside `<main class="flex flex-1 ...">`
+   * - put `main` at 640px with two 188px gutters of empty page around it, the
+   * whole app floating 48px below the top of the window on `body`'s padding.
+   *
+   * So the shape moved onto the page that wants it. `max-width` is the column
+   * plus its own gutters because everything here is `border-box`, which is what
+   * makes the demo land pixel for pixel where it did before.
+   *
+   * This is the same trap the `button`, `input` and `label` rules below were
+   * narrowed for. It reaches `body`, `main`, `form`, `h1` and `h2` too, and those
+   * five are what a screen is made of, so their shape lives on `.starting-page`
+   * and their colour, face and size stay here where every screen wants them.
+   */
+  .starting-page {
+    margin: 0 auto;
+    max-width: calc(40rem + 2.5rem);
+    padding: 3rem 1.25rem;
+  }
+
+  /*
+   * A heading's FACE is a starting style; its SPACING is the page's business.
+   *
+   * The face, the weight and the size stay here, so a bare `<h1>` on any screen
+   * is set in the look's display family rather than in the browser's own bold.
+   * The margins moved to the starting page for the reason `.starting-page` and
+   * the form rule above give: measured 2026-09-02, the look board draws its page
+   * head as `flex flex-col gap-1` around an `h1` and a line under it, and the
+   * same markup in the app came out 5.6px taller because a bare `h1` rule was
+   * still adding a bottom margin inside a flex column that had already said what
+   * the gap was. `h2`'s was 36px above every one of them.
+   */
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    /* The weight that face was actually shipped at - never the browser's own bold,
+       which it would have to fake for a display face that ships one weight. */
+    font-weight: var(--display-weight);
+    font-size: 1.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--display-weight);
+    font-size: 1.1rem;
+  }
+
+  .starting-page h1 {
+    margin-bottom: 0.35rem;
+  }
+
+  .starting-page h2 {
+    margin: 2.25rem 0 0.75rem;
+  }
+
+  .tagline {
+    margin: 0;
+    color: var(--muted-foreground);
+  }
+
+  /*
+   * The corner is the look's own largest step, the same one the kit's Badge
+   * draws with `rounded-4xl`: round when the look is round, square when it is
+   * square.
+   */
+  .badge {
+    display: inline-block;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--radius-4xl);
+    background: var(--accent);
+    color: var(--accent-foreground);
+    font-size: 0.75rem;
+    vertical-align: 0.15em;
+  }
+
+  .notice {
+    margin: 1.25rem 0 0;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--muted-foreground);
+    font-size: 0.9rem;
+  }
+
+  .notes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .notes li {
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    color: var(--card-foreground);
+  }
+
+  .notes li + li {
+    margin-top: 0.5rem;
+  }
+
+  .empty {
+    color: var(--muted-foreground);
+  }
+
+  /*
+   * The starting page's form, for the same reason `.starting-page` exists above.
+   * A bottom-aligned wrapping row is what the notes demo wants; it is not what
+   * every form a screen writes wants, and `<form>` is every form. Measured: a
+   * form written `flex flex-col gap-4` still came out `flex-wrap: wrap` and
+   * `align-items: flex-end`, because those two are not what `flex-col` sets.
+   */
+  .starting-page form {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  /*
+   * `:not([data-slot])` on these three for the reason the `button` rule below
+   * spells out: a kit piece writes utilities only for what it means to set, so a
+   * base rule reaches straight through for everything else. Measured 2026-09-02
+   * on a page holding one of every kit piece, before the scoping: the kit's own
+   * Input carried this rule's `margin-top` (4px) and its focus rule's outline
+   * width and offset (2px each, drawn by nobody only because the piece says
+   * `outline-none`); the kit's Label was `flex: 1 1 256px` and painted in
+   * `--muted-foreground` where it means to inherit the page's ink.
+   */
+  label:not([data-slot]) {
+    display: block;
+    flex: 1 1 16rem;
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+  }
+
+  input:not([data-slot]) {
+    margin-top: 0.25rem;
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--input);
+    border-radius: var(--radius);
+    background: var(--card);
+    color: var(--foreground);
+    font: inherit;
+  }
+
+  input:not([data-slot]):focus-visible,
+  button:not([data-slot]):not([class*="rounded-"]):not([class*="bg-"]):not([class*="text-"]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .secondary {
+    background: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  .panel {
+    background: var(--popover);
+    color: var(--popover-foreground);
+  }
+
+  .side {
+    background: var(--sidebar);
+    color: var(--sidebar-foreground);
+    border-right: 1px solid var(--sidebar-border);
+  }
+
+  .side .current {
+    background: var(--sidebar-primary);
+    color: var(--sidebar-primary-foreground);
+  }
+
+  .side a:hover {
+    background: var(--sidebar-accent);
+    color: var(--sidebar-accent-foreground);
+  }
+
+  .side a:focus-visible {
+    outline: 2px solid var(--sidebar-ring);
+  }
+
+  .quiet {
+    background: var(--muted);
+  }
+
+  /*
+   * The five bands are MARKS, never words.
+   *
+   * They are held to the floor a shape has to clear against a surface, which is
+   * lower than the floor words have to clear - so painting a caption in one is
+   * asking a colour to do a job it was never checked for. Measured: a band that
+   * cleared its surface as a mark came back at 2.57 against a panel, well under
+   * what words need. Fill with them; label beside them in `--foreground`.
+   */
+  .figure .one { background: var(--chart-1); }
+  .figure .two { background: var(--chart-2); }
+  .figure .three { background: var(--chart-3); }
+  .figure .four { background: var(--chart-4); }
+  .figure .five { background: var(--chart-5); }
+
+  .figure li {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--foreground);
+  }
+
+  .figure span {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-radius: var(--radius-xs);
+  }
+
+  /*
+   * A plain `<button>` that nobody styled. The kit's own Button is the one to reach for -
+   * this is what the browser's grey rectangle becomes until then.
+   *
+   * `:not([data-slot])` is what holds it to that, and it was measured rather than
+   * guessed. The sentence that used to stand here - "a utility class or the kit's
+   * Button beats it from outside this layer" - is true only of a utility somebody
+   * WROTE, and the kit's quieter buttons deliberately write none: `variant="ghost"`
+   * names no background and no colour at all, because it means "take the surface you
+   * are on". So this rule reached straight through and painted every ghost button as a
+   * filled primary one, and an `outline` button - which names a background but no
+   * colour - came out with white words on a white face. The same went for every
+   * `Toggle`. Measured 2026-09-02 on the first page to use them: computed background
+   * `var(--primary)`, computed colour `var(--primary-foreground)`, on buttons whose
+   * class list carried the ghost variant correctly.
+   *
+   * Every piece of the kit marks itself with `data-slot`, so naming that is most of
+   * the fix, and a hand-written button keeps exactly the look it had.
+   *
+   * `data-slot` is not all of it, though, because two buttons in the kit are drawn by
+   * somebody else's code and carry no mark of ours. Measured 2026-09-02 with the first
+   * scoping alone in place: the month arrows on every calendar and date field - drawn
+   * by react-day-picker, styled by our own `buttonVariants({ variant: "ghost" })` -
+   * came out 28x28 filled `var(--primary)` with white marks in them, and the date
+   * field's clear cross came out 32x17.6 filled the same, inside a 16px slot. So the
+   * rule also stands aside for a button that carries any styling of its own: a class
+   * naming a corner, a background or an ink. A button nobody styled has none of those
+   * and keeps every line below; the three narrowings cost it nothing.
+   */
+  button:not([data-slot]):not([class*="rounded-"]):not([class*="bg-"]):not([class*="text-"]) {
+    padding: 0.55rem 1rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:not([data-slot]):not([class*="rounded-"]):not([class*="bg-"]):not([class*="text-"])[disabled] {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .problem {
+    flex: 1 0 100%;
+    margin: 0;
+    color: var(--destructive);
+    font-size: 0.9rem;
+  }
+
+  .problem strong {
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--radius);
+    background: var(--destructive);
+    color: var(--destructive-foreground);
+  }
+
+  /*
+   * Calmer motion for people who turn it off.
+   *
+   * Every computer and phone lets a person ask for less movement on screen, and
+   * some people need it: a window that zooms in or a panel that slides across can
+   * make them feel unwell. The kit's windows, menus and pop-ups get their entrance
+   * from `tw-animate-css` (`animate-in`, `zoom-in-95`, `slide-in-from-top-2` and the
+   * rest), which moves them without asking; the side panel and the navigation
+   * menu's panels slide on a transition of their own. Only the shimmer in `kit.css`
+   * answers this question by itself.
+   *
+   * So for those people every entrance and exit keeps its fade and loses its
+   * movement: nothing slides, zooms or turns, and a window still visibly comes and
+   * goes at the moment it always did. The animation keeps running rather than being
+   * switched off, on purpose: a kit window waits for its closing animation to end
+   * before it leaves, and a fade that still ends is what keeps opening and closing
+   * exactly as reliable as before. A fade is not movement; it stays.
+   *
+   * `!important` is how a starting style reaches past a utility, and this is the
+   * only place this file uses it. Inside a layer it counts the other way round: an
+   * important rule in `base` beats even an important utility. That is the point - a
+   * person who asked for stillness asked for it on every screen.
+   *
+   * Two pieces still move: the drawer and the toast. Both are pulled by a finger
+   * and work out their own position as they go, so holding them still is a change
+   * to make in the screen that uses them, not a line here. Spinners and skeletons
+   * are each screen's own choice too: `motion-reduce:animate-none` stops one, as
+   * `loading.jsx` does, and words beside it keep saying what is happening. Never
+   * hide a thing here to stop it moving; stop the movement.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      --tw-enter-translate-x: 0 !important;
+      --tw-enter-translate-y: 0 !important;
+      --tw-enter-scale: 1 !important;
+      --tw-enter-rotate: 0 !important;
+      --tw-exit-translate-x: 0 !important;
+      --tw-exit-translate-y: 0 !important;
+      --tw-exit-scale: 1 !important;
+      --tw-exit-rotate: 0 !important;
+    }
+
+    /*
+     * The side panel and the navigation menu's panels rest where they open and
+     * only start a little to one side. Holding them at rest while they come and go
+     * leaves the fade they already carry.
+     */
+    [data-slot="sheet-content"]:is([data-starting-style], [data-ending-style]),
+    [data-slot="navigation-menu-content"]:is([data-starting-style], [data-ending-style]) {
+      translate: none !important;
+    }
+
+    /*
+     * The navigation menu's pop-up and the autocomplete list zoom on a transition
+     * of their own while they come and go. No kit piece rests at a size other than
+     * its own, so holding every coming and going at its size moves nothing at rest.
+     */
+    :is([data-starting-style], [data-ending-style]) {
+      scale: none !important;
+    }
+  }
+}
+
+/* The workshop is the room; the surrounding controls stay quiet. */
+.sw-app { min-height: 100dvh; max-width: 1680px; margin: 0 auto; background: var(--background); }
+.sw-topbar { display: flex; align-items: center; gap: .7rem; min-height: 72px; padding: .8rem 2.5rem; border-bottom: 1px solid var(--border); }
+.sw-brand { display: inline-flex; align-items: center; gap: .65rem; color: var(--foreground); text-decoration: none; font-family: var(--font-display); font-size: 1.55rem; font-weight: var(--display-weight); letter-spacing: -.055em; }
+.sw-brand-mark { display: grid; place-items: center; width: 38px; height: 38px; background: var(--primary); color: var(--primary-foreground); border-radius: var(--radius-xl); }
+.sw-brand-mark svg { width: 21px; height: 21px; }
+.sw-wallet { margin-left: auto; display: flex; align-items: center; gap: .5rem; font-size: 1.1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sw-wallet svg { width: 19px; }
+.sw-nav { min-height: 56px; display: flex; align-items: center; flex-wrap: nowrap; gap: .35rem; padding: .55rem 2.5rem; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+.sw-nav [data-slot=button] { flex-shrink: 0; min-height: 36px; font-size: .78rem; }
+.sw-nav .sw-nav-active { background: var(--secondary); color: var(--secondary-foreground); }
+.sw-feedback { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; padding: .85rem 2.5rem; background: var(--muted); color: var(--muted-foreground); font-size: .8rem; border-bottom: 1px solid var(--border); }
+.sw-feedback-problem { color: var(--destructive); }
+.sw-workshop-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; min-height: 620px; }
+.sw-world { position: relative; min-width: 0; overflow: hidden; background: var(--muted); }
+.sw-scene { position: absolute; inset: 0; min-height: 100%; }
+.sw-scene canvas { display: block; width: 100%; height: 100%; touch-action: pan-y; }
+.sw-scene-fallback { display: grid; place-items: center; padding: 10rem 3rem; height: 100%; color: var(--muted-foreground); font-size: .9rem; }
+.sw-world-heading { position: absolute; z-index: 1; left: 1.5rem; top: 1.5rem; pointer-events: none; max-width: calc(100% - 3rem); padding: .7rem .9rem; background: var(--card); color: var(--card-foreground); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.sw-world-heading h1 { font-size: 1.05rem; line-height: 1.35; letter-spacing: -.02em; margin: 0 0 .3rem; max-width: 28ch; overflow-wrap: anywhere; }
+.sw-eyebrow { display: block; color: var(--muted-foreground); font-size: .7rem; font-weight: 600; line-height: 1.5; letter-spacing: .05em; }
+.sw-world-badge { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .35rem; color: var(--muted-foreground); font-size: .7rem; line-height: 1.4; }
+.sw-world-badge svg { width: 13px; height: 13px; }
+.sw-focus-panel { min-width: 0; border-left: 1px solid var(--border); padding: 2.3rem 1.8rem; display: flex; flex-direction: column; gap: .85rem; background: var(--card); color: var(--card-foreground); }
+.sw-focus-panel h2 { font-family: var(--font-display); font-size: 1.65rem; line-height: 1.2; letter-spacing: -.035em; font-weight: var(--display-weight); margin: .1rem 0 .4rem; }
+.sw-focus-panel > [data-slot=button] { width: 100%; min-height: 42px; margin-top: .15rem; font-size: .78rem; }
+.sw-copy { color: var(--muted-foreground); font-size: .85rem; line-height: 1.6; margin: .15rem 0 .4rem; }
+.sw-focus-panel [data-slot=label] { font-size: .75rem; margin-top: .2rem; }
+.sw-focus-panel [data-slot=input] { min-height: 39px; font-size: .8rem; }
+.sw-note { display: flex; align-items: start; gap: .5rem; background: var(--muted); color: var(--muted-foreground); padding: .85rem; border-radius: var(--radius); font-size: .76rem; line-height: 1.65; margin: .15rem 0; }
+.sw-note svg { width: 17px; height: 17px; flex-shrink: 0; margin-top: .15rem; }
+.sw-fine { margin: .15rem 0; color: var(--muted-foreground); font-size: .75rem; line-height: 1.5; }
+.sw-row { display: flex; justify-content: space-between; align-items: center; gap: .6rem; padding: .55rem 0; font-size: .75rem; color: var(--muted-foreground); }
+.sw-row strong { display: inline-flex; align-items: center; gap: .3rem; color: var(--foreground); white-space: nowrap; font-weight: 500; font-variant-numeric: tabular-nums; }
+.sw-row svg { width: 13px; height: 13px; }
+.sw-commission { padding: .55rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: .35rem 0; }
+.sw-time-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; margin: .2rem 0; }
+.sw-time-options [data-slot=button] { font-size: .72rem; min-height: 36px; padding: .3rem .45rem; }
+.sw-timer { font-size: clamp(3.4rem, 5.2vw, 4.6rem); line-height: 1; font-weight: 400; font-variant-numeric: tabular-nums; letter-spacing: -.07em; padding: 1.2rem 0 .7rem; }
+.sw-focus-state { display: inline-flex; align-items: center; gap: .5rem; }
+.sw-live-dot, .sw-rest-dot { width: 6px; height: 6px; border-radius: var(--radius-4xl); background: var(--primary); }
+.sw-live-dot { animation: sw-breathe 2s ease-in-out infinite; }
+@keyframes sw-breathe { 50% { opacity: .3; } }
+.sw-review-total { font-size: 2rem; font-family: var(--font-display); letter-spacing: -.04em; margin: .25rem 0; }
+.sw-finish-badge { display: inline-flex; align-items: center; align-self: flex-start; gap: .4rem; padding: .45rem .6rem; border: 1px solid var(--border); border-radius: var(--radius-xl); font-size: .72rem; }
+.sw-finish-badge svg { width: 14px; height: 14px; }
+.sw-price { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: .3rem 0; font-size: .75rem; color: var(--muted-foreground); }
+.sw-price strong { color: var(--foreground); font-size: 1.5rem; font-weight: 500; display: flex; align-items: center; gap: .5rem; }
+.sw-price svg { width: 17px; }
+.sw-progress-strip { padding: 1.5rem 2.5rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 170px minmax(0, 1fr) 140px; gap: 1.5rem; align-items: start; }
+.sw-progress-strip h2 { font-size: 1rem; margin-top: .2rem; }
+.sw-progress-strip p { font-size: .7rem; color: var(--muted-foreground); margin: .35rem 0 0; }
+.sw-stage-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); align-items: start; gap: 1rem; width: 100%; }
+.sw-stage { display: flex; gap: .6rem; align-items: flex-start; }
+.sw-stage > span { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--border); border-radius: var(--radius-4xl); color: var(--muted-foreground); font-size: .7rem; }
+.sw-stage .sw-stage-complete { background: var(--primary); color: var(--primary-foreground); border-color: var(--primary); }
+.sw-stage svg { width: 12px; height: 12px; }
+.sw-stage strong { display: block; font-size: .8rem; font-weight: 500; }
+.sw-stage small { font-size: .72rem; color: var(--muted-foreground); display: block; }
+.sw-progress-total { display: flex; flex-direction: column; text-align: right; gap: .15rem; }
+.sw-progress-total strong { font-size: .85rem; font-weight: 600; }
+.sw-progress-total > span, .sw-progress-total small { color: var(--muted-foreground); font-size: .65rem; }
+.sw-footer { display: flex; justify-content: flex-end; padding: 1rem 2.5rem; color: var(--muted-foreground); font-size: .7rem; }
+.sw-footer > span { display: inline-flex; align-items: center; gap: .45rem; }
+.sw-footer svg { width: 13px; height: 13px; }
+.sw-page { min-height: calc(100dvh - 180px); padding-top: 2rem; padding-bottom: 2rem; gap: 1.3rem; }
+.sw-page > header h1 { font-family: var(--font-display); font-size: 2.1rem; font-weight: var(--display-weight); letter-spacing: -.045em; }
+.sw-section-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem 2rem; margin: .3rem 0 1.2rem; }
+.sw-section-heading h2 { font-size: 1rem; }
+.sw-section-heading p { font-size: .75rem; color: var(--muted-foreground); margin: 0; }
+.sw-recipes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.sw-recipe { padding-top: 1.4rem; }
+.sw-recipe-icon { width: 48px; height: 48px; border-radius: var(--radius-xl); background: var(--muted); color: var(--foreground); display: grid; place-items: center; margin-bottom: .8rem; }
+.sw-recipe-icon svg { width: 23px; height: 23px; stroke-width: 1.3; }
+.sw-recipe [data-slot=card-title] { font-size: 1.05rem; font-family: var(--font-display); }
+.sw-recipe [data-slot=card-description] { font-size: .8rem; line-height: 1.5; margin-top: .4rem; }
+.sw-recipe-actions { display: flex; gap: .5rem; margin-top: auto; padding-top: .8rem; }
+.sw-recipe-actions [data-slot=button] { width: 100%; min-height: 38px; }
+.sw-current-jobs { margin: 0 0 2rem; display: flex; flex-direction: column; gap: .8rem; }
+.sw-current-jobs h2 { font-size: 1rem; }
+.sw-job-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.sw-job-row > div { flex: 1; min-width: 160px; }
+.sw-job-row h3 { font-size: .9rem; }
+.sw-job-row p { color: var(--muted-foreground); font-size: .7rem; margin: .25rem 0 0; }
+.sw-empty-card { grid-column: 1 / -1; }
+.sw-empty-card [data-slot=card-content], .sw-empty { padding: 3rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: .8rem; }
+.sw-empty-card svg, .sw-empty > svg { width: 30px; height: 30px; color: var(--muted-foreground); stroke-width: 1; }
+.sw-empty-card h2, .sw-empty h2 { font-size: 1.3rem; }
+.sw-empty-card p, .sw-empty p { font-size: .8rem; color: var(--muted-foreground); }
+.sw-showpiece p { color: var(--muted-foreground); font-size: .75rem; margin: .4rem 0; }
+.sw-growth-card { max-width: 670px; margin: 0 auto; padding: 1.5rem; }
+.sw-growth-card [data-slot=card-title] { font-size: 1.6rem; font-family: var(--font-display); letter-spacing: -.035em; }
+.sw-growth-card [data-slot=card-description] { font-size: .85rem; line-height: 1.8; margin-top: .4rem; }
+.sw-growth-card [data-slot=card-content] { display: flex; flex-direction: column; gap: 1rem; }
+.sw-requirements { display: flex; flex-direction: column; gap: 1.1rem; padding: .6rem 0; }
+.sw-requirement { display: flex; align-items: center; gap: .8rem; }
+.sw-requirement > span { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--border); border-radius: var(--radius-4xl); color: var(--muted-foreground); }
+.sw-requirement .sw-requirement-done { background: var(--primary); color: var(--primary-foreground); }
+.sw-requirement svg { width: 15px; height: 15px; }
+.sw-requirement strong { font-size: .8rem; font-weight: 500; display: block; }
+.sw-requirement small { display: block; font-size: .7rem; color: var(--muted-foreground); margin-top: .15rem; }
+.sw-history { margin: 0; padding: 0; list-style: none; }
+.sw-history li { display: flex; gap: .8rem; align-items: start; padding: 1.2rem .2rem; border-bottom: 1px solid var(--border); }
+.sw-history li:last-child { border: 0; }
+.sw-history-icon { display: grid; place-items: center; padding: .65rem; background: var(--muted); border-radius: var(--radius); }
+.sw-history-icon svg { width: 16px; height: 16px; }
+.sw-history li > div { flex: 1; min-width: 0; }
+.sw-history strong { font-size: .9rem; font-weight: 500; }
+.sw-history p { font-size: .8rem; margin: .3rem 0; overflow-wrap: anywhere; }
+.sw-history small { color: var(--muted-foreground); font-size: .7rem; }
+.sw-tag { max-width: 20ch; overflow-wrap: anywhere; padding: .25rem .5rem; font-size: .7rem; background: var(--muted); border-radius: var(--radius); }
+.sw-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+@media (min-width: 1440px) { .sw-workshop-layout { min-height: 710px; grid-template-columns: minmax(0, 1fr) 390px; } .sw-focus-panel { padding: 2.6rem 2rem; } }
+@media (max-width: 1050px) { .sw-topbar { padding-left: 1.5rem; padding-right: 1.5rem; } .sw-nav { padding-left: 1.5rem; padding-right: 1.5rem; } .sw-workshop-layout { grid-template-columns: minmax(0, 1fr) 320px; min-height: 620px; } .sw-focus-panel { padding: 1.7rem 1.4rem; } .sw-focus-panel h2 { font-size: 1.65rem; } .sw-world-heading { left: 1.4rem; top: 1.5rem; } .sw-world-footer { left: 1.3rem; right: 1.3rem; } .sw-scene-caption { display: none; } .sw-progress-strip { grid-template-columns: 170px minmax(0, 1fr); gap: 1.3rem; padding: 1.5rem; } .sw-progress-total { grid-column: 1 / -1; flex-direction: row; justify-content: end; gap: .4rem; } }
+@media (max-width: 760px) { .sw-topbar { min-height: 74px; padding: 1rem; gap: .65rem; } .sw-brand { font-size: 1.3rem; gap: .5rem; } .sw-brand-mark { width: 32px; height: 32px; } .sw-brand-note { display: none; } .sw-wallet { font-size: .95rem; gap: .3rem; } .sw-topbar > [data-slot=button] { padding: .35rem; } .sw-nav { padding: .6rem .7rem; gap: .2rem; } .sw-nav [data-slot=button] { font-size: .68rem; padding-left: .55rem; padding-right: .55rem; min-height: 38px; } .sw-nav svg { width: 14px; height: 14px; } .sw-nav-space { display: none; } .sw-workshop-layout { grid-template-columns: 1fr; } .sw-world { height: 420px; } .sw-world-heading { left: 1.2rem; top: 1.2rem; } .sw-world-heading h1 { font-size: 1rem; } .sw-world-footer { bottom: 1rem; left: 1rem; } .sw-focus-panel { border-left: 0; border-top: 1px solid var(--border); padding: 1.8rem 1.5rem 2rem; gap: .9rem; } .sw-focus-panel h2 { font-size: 1.65rem; max-width: 24ch; } .sw-copy { font-size: .87rem; } .sw-focus-panel > [data-slot=button] { min-height: 45px; font-size: .85rem; } .sw-focus-panel [data-slot=input] { min-height: 44px; font-size: 1rem; } .sw-time-options { grid-template-columns: repeat(6, minmax(0, 1fr)); } .sw-time-options [data-slot=button] { min-height: 42px; } .sw-progress-strip { grid-template-columns: 1fr; padding: 1.5rem; gap: 1.1rem; } .sw-progress-total { grid-column: auto; justify-content: start; text-align: left; flex-wrap: wrap; } .sw-stage-list { gap: 1rem 1.5rem; } .sw-feedback { padding: .8rem 1rem; } .sw-footer { padding: 1rem; flex-wrap: wrap; font-size: .62rem; } .sw-recipes { grid-template-columns: repeat(2, minmax(0, 1fr)); } .sw-page { padding-top: 1.5rem; } .sw-page > header h1 { font-size: 1.8rem; } }
+@media (max-width: 440px) { .sw-world { height: 360px; } .sw-world-badge { font-size: .65rem; } .sw-world-heading h1 { font-size: 1rem; max-width: 25ch; } .sw-time-options { grid-template-columns: repeat(3, minmax(0, 1fr)); } .sw-recipes { grid-template-columns: 1fr; } .sw-growth-card { padding: .7rem; } .sw-nav { gap: .15rem; } .sw-nav [data-slot=button] { font-size: .75rem; padding: .4rem .65rem; } .sw-nav [data-slot=button] svg { display: none; } .sw-brand { font-size: 1.2rem; } .sw-wallet svg { width: 15px; } .sw-wallet { font-size: .85rem; } }
+@media (prefers-reduced-motion: reduce) { .sw-live-dot { animation: none; } }
+.sw-showpiece-actions { display: flex; flex-direction: column; gap: .5rem; margin-top: 1rem; }
+.sw-showpiece-actions [data-slot=button] { min-height: 38px; }
+.sw-pagination { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem; padding-top: 1.5rem; }
+
+/* Crew and conserved shared focus use the existing workshop palette. */
+.sw-crew-grid, .sw-growth-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.sw-growth-grid .sw-growth-card { max-width: none; width: 100%; margin: 0; }
+.sw-crew-grid [data-slot=card-content] { display: flex; flex-direction: column; gap: .7rem; }
+.sw-crew-grid [data-slot=card-content] p { margin: 0; font-size: .82rem; line-height: 1.6; }
+.sw-growth-grid > .sw-fine { grid-column: 1 / -1; }
+.sw-assignment-editor { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: .8rem; min-width: 0; display: flex; flex-direction: column; gap: .6rem; }
+.sw-assignment-editor legend { font-size: .8rem; padding: 0 .3rem; }
+.sw-assignment { display: flex; flex-direction: column; gap: .4rem; padding-bottom: .7rem; border-bottom: 1px solid var(--border); min-width: 0; }
+.sw-assignment > strong, .sw-assignment > span { font-size: .8rem; font-weight: 500; }
+.sw-assignment [data-slot=native-select-wrapper], .sw-assignment-editor > [data-slot=native-select-wrapper] { width: 100%; }
+.sw-assignment [data-slot=native-select] { text-overflow: ellipsis; }
+.sw-allocation-summary { background: var(--muted); border-radius: var(--radius-lg); padding: .8rem 1rem; color: var(--foreground); }
+.sw-allocation-summary > strong { font-size: .85rem; }
+.sw-allocation-summary p, .sw-allocation-summary small { font-size: .75rem; line-height: 1.6; margin: .4rem 0; }
+.sw-allocation-summary small { display: block; color: var(--muted-foreground); }
+.sw-session-result { padding: 1rem 2.5rem; border-bottom: 1px solid var(--border); display: flex; gap: 1rem; align-items: center; }
+.sw-session-result .sw-allocation-summary { flex: 1; }
+@media (max-width: 760px) { .sw-crew-grid, .sw-growth-grid { grid-template-columns: 1fr; } .sw-session-result { padding: 1rem; align-items: start; } .sw-assignment [data-slot=native-select] { min-height: 44px; } }
+
+/* Component work retains the workshop's semantic colors and readable targets. */
+.sw-recipe .sw-stage-list { align-items: flex-start; margin: 1rem 0; }
+.sw-recipe .sw-stage { align-items: flex-start; width: 100%; }
+.sw-stage > div { min-width: 0; }
+.sw-stage small { line-height: 1.6; max-width: 37ch; overflow-wrap: anywhere; }
+.sw-stage > span { flex-shrink: 0; }
+.sw-assignment-editor [data-slot=native-select] { white-space: normal; min-width: 0; }
+.sw-crew-grid [data-slot=card-description] { line-height: 1.7; }
+
+/* Free styles and the community gift use the workshop's existing semantic palette. */
+.sw-community-grid { display: grid; gap: 1rem; }
+.sw-community-card { width: 100%; }
+.sw-community-card [data-slot=card-content] { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; }
+.sw-community-card .sw-stage-list { width: 100%; align-items: flex-start; }
+.sw-community-card .sw-stage { align-items: flex-start; }
+.sw-community-card p { font-size: .85rem; line-height: 1.7; margin: 0; }
+.sw-community-thanks { border-left: 2px solid var(--border); padding: .5rem 1rem; }
+.sw-community-thanks h3 { font-size: 1.05rem; margin: .4rem 0; }
+.sw-community-thanks p { max-width: 65ch; font-size: .85rem; line-height: 1.6; }
+.sw-commemorative { margin-top: 1rem; }
+.sw-style-editor { border: 1px solid var(--border); border-radius: var(--radius-lg); padding: .8rem; margin: 1rem 0; min-width: 0; display: flex; flex-direction: column; gap: .6rem; }
+.sw-style-editor legend { font-size: .8rem; padding: 0 .3rem; }
+.sw-style-choice, .sw-share-control { min-width: 0; display: flex; flex-direction: column; gap: .4rem; }
+.sw-style-choice [data-slot=native-select-wrapper], .sw-share-control [data-slot=native-select-wrapper] { width: 100%; }
+.sw-style-choice [data-slot=native-select] { width: 100%; text-overflow: ellipsis; }
+.sw-style-choice small { font-size: .7rem; color: var(--muted-foreground); }
+@media (max-width: 760px) { .sw-community-card [data-slot=card-content] > [data-slot=button] { width: 100%; white-space: normal; height: auto; min-height: 44px; } .sw-style-choice [data-slot=native-select], .sw-share-control [data-slot=native-select] { min-height: 44px; } }
+
+.sw-kept-preview { margin-bottom: 1.5rem; }
+.sw-kept-preview [data-slot=card-content] { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; }
+.sw-kept-preview-scene { position: relative; width: 100%; height: 430px; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--muted); }
+@media (max-width: 760px) { .sw-kept-preview-scene { height: 350px; } }
+
+/* Keep the workshop visible; supporting information opens when needed. */
+.sw-save-status { color: var(--muted-foreground); font-size: .75rem; }
+.sw-topbar > [aria-pressed=true] { background: var(--secondary); }
+.sw-disclosure { border-top: 1px solid var(--border); padding: .75rem 0; min-width: 0; }
+.sw-disclosure > summary, .sw-stage-details > summary { cursor: pointer; color: var(--muted-foreground); font-size: .78rem; line-height: 1.5; }
+.sw-disclosure > summary:hover, .sw-stage-details > summary:hover { color: var(--foreground); }
+.sw-disclosure > summary:focus-visible, .sw-stage-details > summary:focus-visible { outline: 2px solid var(--ring); outline-offset: 4px; border-radius: var(--radius); }
+.sw-disclosure[open] > summary { margin-bottom: .8rem; color: var(--foreground); }
+.sw-session-note > div { display: flex; flex-direction: column; gap: .5rem; }
+.sw-focus-panel .sw-session-intention { font-family: inherit; font-size: 1.1rem; letter-spacing: 0; }
+.sw-stage-details { margin-top: .25rem; }
+.sw-stage-details summary { font-size: .72rem; }
+.sw-stage-details[open] { margin-bottom: .4rem; }
+.sw-recipe [data-slot=card-content] { display: flex; flex-direction: column; gap: .2rem; flex: 1; }
+.sw-recipe .sw-disclosure { margin-top: .6rem; }
+.sw-appearance { margin: .5rem 0; }
+.sw-appearance .sw-style-editor { border: 0; padding: 0; margin: 0; }
+.sw-kept-preview [data-slot=card-title] { font-size: 1.1rem; }
+@media (max-width: 760px) {
+  .sw-save-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .sw-topbar { min-height: 64px; padding: .7rem 1rem; gap: .4rem; }
+  .sw-brand { flex-shrink: 0; }
+  .sw-topbar > [data-slot=button] { width: 32px; height: 36px; min-width: 32px; padding: .3rem; }
+  .sw-nav { min-height: 52px; padding: .5rem .7rem; }
+  .sw-world-heading { left: 1rem; top: 1rem; padding: .55rem .7rem; }
+  .sw-world-badge { font-size: .65rem; }
+  .sw-recipe [data-slot=card-description] { min-height: 0; }
+}
+
+.sw-preview-anchor { scroll-margin-top: 1rem; }
+
+.sw-nav::-webkit-scrollbar { display: none; }
+
+/* Guided progression stays subordinate to the focus action. */
+.sw-milestone { margin-top: .5rem; }
+.sw-milestone .sw-requirements { gap: .55rem; padding: .2rem 0 .6rem; }
+.sw-milestone .sw-requirement { gap: .5rem; }
+.sw-milestone .sw-requirement > span { width: 22px; height: 22px; flex-shrink: 0; }
+.sw-milestone .sw-requirement svg { width: 11px; height: 11px; }
+.sw-milestone .sw-requirement strong, .sw-milestone .sw-requirement small { font-size: .72rem; }
+.sw-milestone [data-slot=button], .sw-showpiece-goal [data-slot=button] { white-space: normal; min-height: 40px; height: auto; }
+.sw-duration-fields { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.sw-duration-fields > div { display: flex; flex-direction: column; gap: .4rem; min-width: 0; }
+.sw-compact-assignments { min-width: 0; }
+.sw-compact-assignments > .sw-fine { overflow-wrap: anywhere; }
+.sw-compact-assignments .sw-disclosure { padding-bottom: .2rem; }
+.sw-assignment-editor .sw-disclosure [data-slot=native-select-wrapper] { width: 100%; }
+.sw-detail-value { font-variant-numeric: tabular-nums; color: var(--foreground); }
+.sw-sale-result { padding: 1rem 2.5rem; border-bottom: 1px solid var(--border); background: var(--muted); display: flex; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; }
+.sw-sale-result > div { flex: 1; min-width: 160px; }
+.sw-sale-result strong { font-size: .9rem; }
+.sw-sale-result p { font-size: .85rem; margin: .3rem 0 0; font-variant-numeric: tabular-nums; }
+.sw-showpiece-goal { border-top: 1px solid var(--border); padding-top: 1rem; margin-top: .5rem; }
+.sw-showpiece-goal > strong { font-size: .85rem; }
+.sw-showpiece-goal p { margin: .5rem 0; }
+@media (max-width: 760px) {
+  .sw-time-options { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sw-sale-result { padding: 1rem; }
+  .sw-sale-result > div { flex-basis: 100%; }
+  .sw-compact-assignments [data-slot=button] { white-space: normal; height: auto; min-height: 44px; }
+}
+.sw-milestone-title { font-weight: 500; color: var(--foreground); }
+.sw-milestone-counts { display: flex; flex-wrap: wrap; gap: .25rem .7rem; margin-top: .35rem; color: var(--muted-foreground); font-size: .7rem; }
+.sw-milestone-counts > span { display: inline-block; }
+.sw-milestone-done { color: var(--foreground); }
+.sw-assignment-summary { display: grid; gap: .55rem; }
+.sw-assignment-summary-row { min-width: 0; }
+.sw-assignment-summary-row > div { display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; font-size: .74rem; }
+.sw-assignment-summary-row strong { font-weight: 500; }
+.sw-assignment-summary-row span { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted-foreground); }
+.sw-assignment-summary-row small { display: block; color: var(--muted-foreground); font-size: .7rem; line-height: 1.5; overflow-wrap: anywhere; }
+
+/* Tasks lead; workshop progress remains visible alongside them. */
+.sw-tasks-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .56fr); gap: 1.5rem; align-items: start; }
+.sw-tasks-card > [data-slot=card-header] { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.sw-task-count { color: var(--muted-foreground); font-size: .75rem; white-space: nowrap; }
+.sw-task-add, .sw-task-picker { display: grid; gap: .5rem; }
+.sw-task-input-row, .sw-task-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.sw-task-input-row input { flex: 1 1 12rem; min-width: 0; }
+.sw-task-input-row input, .sw-task-input-row > button { min-height: 40px; }
+.sw-task-picker-label { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.sw-task-picker > button { justify-self: start; }
+.sw-task-picker [data-slot=native-select-wrapper] { width: 100%; min-width: 0; }
+.sw-task-picker select { width: 100%; min-width: 0; min-height: 40px; text-overflow: ellipsis; }
+.sw-task-search { position: relative; margin-top: 1.25rem; }
+.sw-task-search svg { position: absolute; left: .75rem; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted-foreground); pointer-events: none; }
+.sw-task-search input { padding-left: 2.2rem; min-height: 40px; }
+.sw-task-list, .sw-task-queue, .sw-evidence-list, .sw-queue-workers { list-style: none; padding: 0; margin: 0; }
+.sw-task-list { margin-top: 1.25rem; }
+.sw-task-row { display: flex; gap: .5rem; padding: 1rem 0; border-top: 1px solid var(--border); }
+.sw-task-toggle { flex-shrink: 0; min-width: 40px; min-height: 40px; color: var(--muted-foreground); }
+.sw-task-toggle[aria-checked=true] { color: var(--foreground); }
+.sw-task-body { flex: 1; min-width: 0; }
+.sw-task-row-main { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
+.sw-task-heading { flex: 1; min-width: 0; padding-top: .2rem; }
+.sw-task-heading > strong { display: block; overflow-wrap: anywhere; font-size: .9rem; line-height: 1.5; }
+.sw-task-heading > small { display: block; color: var(--muted-foreground); font-size: .75rem; line-height: 1.5; margin-top: .2rem; }
+.sw-task-row-actions { display: flex; align-items: center; flex-shrink: 0; gap: .25rem; }
+.sw-task-row-actions > button { min-height: 40px; }
+.sw-task-row-actions > button[aria-label] { min-width: 40px; }
+.sw-task-active-label { display: block; color: var(--foreground); font-weight: 600; margin-top: .2rem; }
+.sw-task-done { text-decoration: line-through; color: var(--muted-foreground); }
+.sw-task-body form { display: grid; gap: .5rem; }
+.sw-task-empty { padding: 2rem .75rem; display: grid; gap: .4rem; justify-items: start; }
+.sw-task-empty > svg { color: var(--muted-foreground); width: 24px; height: 24px; margin-bottom: .25rem; }
+.sw-task-empty strong { font-size: .95rem; }
+.sw-task-empty p { font-size: .8rem; color: var(--muted-foreground); line-height: 1.6; max-width: 42ch; }
+.sw-task-change { margin-top: 1rem; padding: .5rem .75rem; background: var(--secondary); color: var(--secondary-foreground); border-radius: var(--radius); display: flex; align-items: center; gap: .5rem; }
+.sw-task-change > span { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: .8rem; }
+.sw-task-pages { justify-content: space-between; margin-top: 1rem; font-size: .8rem; }
+.sw-task-session { display: flex; gap: 1rem; align-items: center; padding: 1rem 1.25rem; margin-bottom: 1.5rem; background: var(--secondary); color: var(--secondary-foreground); border: 1px solid var(--border); border-radius: var(--radius); }
+.sw-task-session-icon { flex-shrink: 0; }
+.sw-task-session > div { flex: 1; min-width: 0; display: grid; gap: .15rem; }
+.sw-task-session strong { overflow-wrap: anywhere; font-size: 1rem; }
+.sw-task-session-state, .sw-task-session small { font-size: .75rem; }
+.sw-task-source { display: grid; gap: .25rem; padding: .75rem 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+.sw-task-source > span { color: var(--muted-foreground); font-size: .75rem; }
+.sw-task-source > strong { font-size: .95rem; }
+.sw-workshop-queue [data-slot=card-title] { display: flex; align-items: center; gap: .5rem; }
+.sw-workshop-queue [data-slot=card-title] > svg { width: 16px; height: 16px; color: var(--muted-foreground); }
+.sw-task-queue-hint { font-size: .8rem; line-height: 1.6; color: var(--muted-foreground); }
+.sw-task-queue > li { padding: 1.1rem 0; overflow-wrap: anywhere; }
+.sw-task-queue > li + li { border-top: 1px solid var(--border); }
+.sw-task-queue > li:last-child { padding-bottom: 0; }
+.sw-queue-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; font-size: .9rem; }
+.sw-queue-heading > svg { width: 16px; height: 16px; flex-shrink: 0; }
+.sw-queue-status { color: var(--muted-foreground); font-size: .75rem; display: block; margin: .2rem 0 .65rem; }
+.sw-product-progress { display: block; width: 100%; height: 5px; appearance: none; border: 0; overflow: hidden; border-radius: var(--radius); background: var(--muted); color: var(--primary); }
+.sw-product-progress::-webkit-progress-bar { background: var(--muted); }
+.sw-product-progress::-webkit-progress-value { background: var(--primary); border-radius: var(--radius); }
+.sw-product-progress::-moz-progress-bar { background: var(--primary); border-radius: var(--radius); }
+.sw-task-queue > li > small { display: block; color: var(--muted-foreground); font-size: .75rem; margin-top: .4rem; }
+.sw-queue-workers { display: grid; gap: .5rem; margin-top: .8rem; }
+.sw-queue-workers li { display: flex; justify-content: space-between; align-items: start; gap: .75rem; font-size: .8rem; }
+.sw-queue-workers small { display: block; font-size: .7rem; color: var(--muted-foreground); }
+.sw-queue-next { margin-top: .65rem; }
+.sw-task-queue-empty { display: grid; gap: .75rem; justify-items: start; padding-top: 1rem; font-size: .8rem; }
+.sw-task-evidence { margin-top: .5rem; padding: .5rem 0 0; border-top: 0; }
+.sw-task-evidence > summary { font-size: .75rem; }
+.sw-evidence-content { padding: .3rem 0; }
+.sw-evidence-content p { font-size: .8rem; }
+.sw-evidence-list > li { display: grid; gap: .25rem; padding: .75rem 0; border-bottom: 1px solid var(--border); font-size: .8rem; overflow-wrap: anywhere; }
+.sw-evidence-list small { color: var(--muted-foreground); }
+.sw-evidence-list ul { padding-left: 1rem; }
+.sw-evidence-content .sw-task-actions { margin-top: .75rem; }
+.sw-completed-tasks { margin-top: 1rem; }
+.sw-result-task { flex-basis: 100%; font-weight: 600; overflow-wrap: anywhere; }
+.sw-session-result { flex-wrap: wrap; }
+.sw-focus-panel:focus { outline: none; }
+.sw-focus-panel:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+@media (max-width: 980px) { .sw-tasks-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) {
+  .sw-task-row-main { flex-wrap: wrap; gap: .5rem; }
+  .sw-task-heading { flex-basis: 100%; }
+  .sw-task-row-actions { width: 100%; justify-content: space-between; }
+  .sw-task-toggle, .sw-task-row-actions > button { min-width: 44px; min-height: 44px; }
+  .sw-task-input-row input { flex-basis: 9rem; }
+  .sw-task-input-row input, .sw-task-input-row > button, .sw-task-picker [data-slot=button], .sw-task-picker select, .sw-task-search input, .sw-task-change > button, .sw-queue-next { min-height: 44px; }
+  .sw-task-change { flex-wrap: wrap; }
+  .sw-task-session { flex-wrap: wrap; gap: .75rem; padding: 1rem; }
+  .sw-task-session > div { flex-basis: calc(100% - 3rem); }
+  .sw-task-session > button { min-height: 44px; margin-left: 2.25rem; }
+  .sw-tasks-card > [data-slot=card-header] { gap: .5rem; }
+}

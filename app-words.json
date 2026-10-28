@@ -1,0 +1,95 @@
+{
+  "record": "tellop-app-words",
+  "version": 1,
+  "keys": [],
+  "records": [
+    {
+      "name": "small_works_workshops",
+      "label": {
+        "en": "Workshops",
+        "tr": "Atölyeler"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_preferences",
+      "label": {
+        "en": "Preferences",
+        "tr": "Tercihler"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_sessions",
+      "label": {
+        "en": "Focus sessions",
+        "tr": "Odaklanma seansları"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_session_parts",
+      "label": {
+        "en": "Focus periods",
+        "tr": "Odaklanma aralıkları"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_jobs",
+      "label": {
+        "en": "Workshop projects",
+        "tr": "Atölye işleri"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_allocations",
+      "label": {
+        "en": "Effort shares",
+        "tr": "Emek payları"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_unlocks",
+      "label": {
+        "en": "Workshop progress",
+        "tr": "Atölye ilerlemesi"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_crew",
+      "label": {
+        "en": "Craftspeople",
+        "tr": "Zanaatkârlar"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_commissions",
+      "label": {
+        "en": "Customer requests",
+        "tr": "Müşteri istekleri"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_operations",
+      "label": {
+        "en": "Saved actions",
+        "tr": "Kaydedilen işlemler"
+      },
+      "fields": []
+    },
+    {
+      "name": "small_works_exports",
+      "label": {
+        "en": "Saved downloads",
+        "tr": "Kaydedilen indirmeler"
+      },
+      "fields": []
+    }
+  ]
+}
