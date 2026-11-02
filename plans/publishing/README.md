@@ -9,9 +9,9 @@ The public repository is `tellop-ai/small-works`. The listing is `small-works`, 
 
 The development branch retains design records. The default branch ships the screened portable export without development plans. Keep the original README’s free-use instructions, the full Three.js credit in NOTICE, and local-data exclusions when preparing that export. Never include saved workshop records.
 
-The initial listing uses the approved icon. Screenshot capture was deferred because the shared machine was occupied by another exclusive test run; the recipe is ready for a later media update. 
+The listing includes the approved icon and three screenshots per language. `store-pictures-record.json` records their source version, dimensions and digests.
 
-## Published 2026-11-02
+## Initial publication 2026-11-02
 
 - Release: 0.1.0.
 - Public default-branch commit: `3f0e2d6b11a05cbe0e4cae7045494f5820ccef97`.
@@ -23,4 +23,15 @@ The initial listing uses the approved icon. Screenshot capture was deferred beca
 - Approved icon: 7,848-byte WebP, visible on the public page.
 - No internet, file, or device permission; no sample records.
 
-Verification: the exporter passed and the production admin passed and published the exact GitHub commit. The public page shows Small Works, Free, English, Türkçe, 0.1.0 and Open source with the correct icon. No app logic changed in this release. The previously completed gameplay tests and contained build were not repeated for this packaging-only change. Screenshots remain a separate, unpublished media task.
+Verification: the exporter passed and the production admin passed and published the exact GitHub commit. The public page shows Small Works, Free, English, Türkçe, 0.1.0 and Open source with the correct icon. No app logic changed in this release. The previously completed gameplay tests and contained build were not repeated for this packaging-only change.
+
+## Screenshot update 2026-11-02
+
+- Public commit: `faa538021014de957cd91aa444b5f1bc14661262`. Only the six screenshot files changed.
+- Signed listing: version 48, published 2026-11-02 at 10:33 UTC. Release label remains 0.1.0.
+- Kept archive: `14b512f82b34845baeac807760f749b6eb5acf5e91ce0f15e8cd09d3f08ce0bf`, 1,458,440 bytes.
+- Six metadata-free 2560 × 1600 WebP images, three in English and three in Turkish, each below 256 KiB.
+- Views: workshop and focus setup, an active session linked to a real-world task, and the task list with its workshop work queue.
+- Each language built and ran through the contained app host using the qualified 2.1.19 dependency set. Disposable records were created through the app’s API. No personal save was read or changed.
+- The initial attempt was retaken to keep the full header visible and select the focus task through its task-row button. All six final images were reviewed on the contact sheet.
+- The portable export and production store check passed. Both public pages expose their three-image galleries.

@@ -51,5 +51,7 @@
       "bytes": 74596,
       "sha256": "c87e28138142380984dc07bbe85ebe750e1f18d9532be22a1e4e6d4be9863e87"
     }
-  ]
+  ],
+  "publishedCommit": "faa538021014de957cd91aa444b5f1bc14661262",
+  "listingVersion": 48
 }
