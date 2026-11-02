@@ -1,0 +1,18 @@
+{
+  "id": "small-works",
+  "languages": [
+    "en",
+    "tr"
+  ],
+  "name": {
+    "en": "Small Works",
+    "tr": "Small Works"
+  },
+  "words": {
+    "en": "Turn focus time into handmade creations. Add real-world tasks, choose a countdown or count-up timer, and craft while you work. Sell finished pieces, welcome skilled makers, and grow from a carpenter’s bench to a forge and craft yard. All crafts and features are free, with no ads or required account.",
+    "tr": "Odaklandığın zamanı el emeği ürünlere dönüştür. Gerçek görevlerini ekle, geri veya ileri sayan sayacı seç ve çalışırken ürünler yap. Tamamlanan ürünleri sat, ustaları ekibine kat ve marangoz tezgâhından demirhane ve zanaat avlusuna uzanan bir atölye kur. Tüm özellikler ücretsiz; reklam ve zorunlu hesap yok."
+  },
+  "needs": [],
+  "sampleRecords": false,
+  "release": "0.1.0"
+}

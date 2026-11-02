@@ -1,0 +1,17 @@
+{
+  "about": "Store app logos: each selected PNG or legacy SVG source and its WebP cut, by digest. Written by `node tools/store-logos/src/cli.ts --write`; checked without it.",
+  "renderer": {
+    "electron": "43.8.3",
+    "chrome": "150.0.7871.250"
+  },
+  "logos": {
+    "small-works": {
+      "source": "brand/store-apps/modern-v2/small-works.png",
+      "sourceSha256": "16e411b38937af72aa034849249ed69c51dd3585e3720abfca566ffb0a1ab05d",
+      "output": "store-apps/small-works/public/store-picture.webp",
+      "outputSha256": "f5ff0da61d0a5e00b34ab22f60dea38960565c0d74fada6bbfe6b58cae94e1b6",
+      "bytes": 7848,
+      "quality": 0.92
+    }
+  }
+}

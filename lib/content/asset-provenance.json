@@ -46,6 +46,23 @@
       "path": "lib/scene/workshop.js",
       "source": "Original Small Works craft yard and neighborhood greenhouse milestone, 2026-10-28",
       "adaptation": "Original locally authored geometry adds a compact front craft yard, dedicated carving and finishing stations, Mara and Lale as fictional adult craftspeople using the approved connected shoulder and constrained wrist rig. Mara has warm brown skin, an oatmeal shirt, russet apron and sand cap; Lale has a blue shirt, ochre apron and mauve cap. Nora, Ada and Ivo retain their original geometry and palettes. Up to three allocated workers work while all five active craftspeople remain visible off duty. Saved panel-a, panel-b, frame and assembly fractions drive independent community construction. Explicit delivery alone adds permanent glazing, warm potted seedlings and a commemorative five-maker sprout display. Authored carved ripples and carved leaves use local geometric inlay; warm honey and dusk blue finishes use cloned, object-local materials with restored natural defaults. All sixteen recipe families retain component visibility and use eligible style surfaces. No imported likeness, external image or model, runtime network, economic effect or new dependency. Hidden meshes, original and cloned style materials remain in the complete disposal registry."
+    },
+    {
+      "id": "small-works-store-icon-modern-v2",
+      "kind": "generated-store-icon",
+      "path": "public/store-picture.webp",
+      "source": "plans/brand/candidates/small-works/small-works-v2.png",
+      "promptPath": "plans/brand/candidates/small-works/prompt.json",
+      "tool": "Built-in image_gen",
+      "styleFamily": "Tellop modern-v2",
+      "sourceSha256": "16e411b38937af72aa034849249ed69c51dd3585e3720abfca566ffb0a1ab05d",
+      "sha256": "f5ff0da61d0a5e00b34ab22f60dea38960565c0d74fada6bbfe6b58cae94e1b6",
+      "width": 256,
+      "height": 256,
+      "bytes": 7848,
+      "encoding": "Tellop store-logos pipeline: Electron downsampling and metadata-free still WebP",
+      "quality": 0.92,
+      "pipelineRecord": "plans/brand/candidates/small-works/pipeline-record.json"
     }
   ]
 }
