@@ -56,7 +56,17 @@
       ],
       "steps": [
         {
-          "go": "/"
+          "go": "/?panel=tasks"
+        },
+        {
+          "wait": {
+            "selector": ".sw-task-row"
+          }
+        },
+        {
+          "click": {
+            "selector": ".sw-task-row:first-child .sw-task-row-actions button:first-child"
+          }
         },
         {
           "wait": {
@@ -68,14 +78,8 @@
         },
         {
           "click": {
-            "selector": "#focus-task"
+            "selector": ".sw-nav button:first-child"
           }
-        },
-        {
-          "key": "ArrowDown"
-        },
-        {
-          "key": "Enter"
         },
         {
           "capture": {}
@@ -92,6 +96,11 @@
         },
         {
           "wait": 3500
+        },
+        {
+          "click": {
+            "selector": ".sw-nav button:first-child"
+          }
         },
         {
           "capture": {}
@@ -169,7 +178,17 @@
       ],
       "steps": [
         {
-          "go": "/"
+          "go": "/?panel=tasks"
+        },
+        {
+          "wait": {
+            "selector": ".sw-task-row"
+          }
+        },
+        {
+          "click": {
+            "selector": ".sw-task-row:first-child .sw-task-row-actions button:first-child"
+          }
         },
         {
           "wait": {
@@ -181,14 +200,8 @@
         },
         {
           "click": {
-            "selector": "#focus-task"
+            "selector": ".sw-nav button:first-child"
           }
-        },
-        {
-          "key": "ArrowDown"
-        },
-        {
-          "key": "Enter"
         },
         {
           "capture": {}
@@ -205,6 +218,11 @@
         },
         {
           "wait": 3500
+        },
+        {
+          "click": {
+            "selector": ".sw-nav button:first-child"
+          }
         },
         {
           "capture": {}

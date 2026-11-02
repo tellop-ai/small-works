@@ -1,0 +1,55 @@
+{
+  "sourceCommit": "3f0e2d6b11a05cbe0e4cae7045494f5820ccef97",
+  "capturedAt": "2026-11-02",
+  "tool": "Tellop contained store-pictures capture workflow",
+  "kit": "next-sqlite 2.1.19",
+  "recipe": "plans/publishing/small-works.pictures.json",
+  "fictionalRecords": true,
+  "width": 2560,
+  "height": 1600,
+  "format": "image/webp",
+  "screens": [
+    {
+      "path": "public/store-pictures/en-1.webp",
+      "language": "en",
+      "subject": "Workshop and focus setup",
+      "bytes": 183416,
+      "sha256": "7fbdeee059fac75b62a3a48e43ffdadef97b85bf539accb887daa889f3331b7c"
+    },
+    {
+      "path": "public/store-pictures/en-2.webp",
+      "language": "en",
+      "subject": "Active focus session linked to a task",
+      "bytes": 165388,
+      "sha256": "64fe561a6e8c0e8c803e1a48614f32c39d55fc7b7b2bc304abc71df8dd121f8e"
+    },
+    {
+      "path": "public/store-pictures/en-3.webp",
+      "language": "en",
+      "subject": "Task list and workshop work queue",
+      "bytes": 71736,
+      "sha256": "3f01159408476bf420db3184edc3791954e32e1c929be82b37dfd6f93298235f"
+    },
+    {
+      "path": "public/store-pictures/tr-1.webp",
+      "language": "tr",
+      "subject": "Workshop and focus setup",
+      "bytes": 183834,
+      "sha256": "bf235ed1fc92361830a298ff94f71477a14d69ea1aa0ed1b9246dbadf49aa4b0"
+    },
+    {
+      "path": "public/store-pictures/tr-2.webp",
+      "language": "tr",
+      "subject": "Active focus session linked to a task",
+      "bytes": 167202,
+      "sha256": "cac2aa57caafa64d9e5008cddf40a301b13ff021253eb4fd84b9be1a994373f4"
+    },
+    {
+      "path": "public/store-pictures/tr-3.webp",
+      "language": "tr",
+      "subject": "Task list and workshop work queue",
+      "bytes": 74596,
+      "sha256": "c87e28138142380984dc07bbe85ebe750e1f18d9532be22a1e4e6d4be9863e87"
+    }
+  ]
+}
